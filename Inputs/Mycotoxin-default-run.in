@@ -1,6 +1,6 @@
 #Deterministic model - default parameters
 Integrate (Lsodes, 1e-4, 1e-6, 1);
-OutputFile("TeA-default-run.out");
+OutputFile("Mycotoxin-default-run.out");
 
 #population mean (from inter-species scaling)
 M_lnkgutabs = 1.25;
