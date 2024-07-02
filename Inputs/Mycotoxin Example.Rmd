@@ -24,8 +24,8 @@ calibplotfolder <- "Calibration Plots"
 
 ```{r deterministic run}
 
-in_file_default <- "TeA-default-run.in.R" 
-out_file_default <- "TeA-default-run.out"
+in_file_default <- "Mycotoxin-default-run.in.R" 
+out_file_default <- "Mycotoxin-default-run.out"
 out_default <- mcsim(model_file=model_file, in_file = in_file_default,
                     out_file = out_file_default)
 out_default_df <- pivot_longer(out_default,cols=2:5)
@@ -46,7 +46,7 @@ ggplot1+
 
 ```{r test calibration with short MCMC runs}
 set.seed(10) # Change seed until can compute at starting point
-in_file_test <- "TeA-MCMC-test-calib.in.R" 
+in_file_test <- "Mycotoxin-MCMC-test-calib.in.R" 
 # Run model
 out_file <- ""
 chains <- list()
@@ -86,7 +86,7 @@ print(checksplot)
 ```{r calibrate using MCMC}
 
 set.seed(2998) # Change seed until can compute at starting point
-in_file_test <- "TeA-MCMC-calib.in.R" 
+in_file_test <- "Mycotoxin-MCMC-calib.in.R" 
 # Run model
 out_file <- ""
 chains <- list()
