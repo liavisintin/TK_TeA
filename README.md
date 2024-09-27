@@ -3,7 +3,7 @@ _TK modelling for determination of the TK parameters of TeA_
 
 The folders "Inputs" and "mycotoxin-pk-model-main" contain an application of the TK modelling algorithm developed by Prof. Weihsueh Chiu (Texas A&M University). The codes contained in the relative repository (https://github.com/wachiuphd/Mycotoxin-PK-model) were modified for the specific application to tenuazonic acid (TeA) case in collaboration with the author. The folder "iTTC" contains the codes and data files used to derive the probabilistic iTTC and apply it for risk assessment using HBM data from 5 different cohorts. The experimental data used were obtained in the context of the ERC project HuMyco (https://cordis.europa.eu/project/id/946192). 
 
-## Files and folders
+## Files and folders related to TK modeling
 To differentiate the input files from the rest of the generated files, the input files are included in the "Inputs" folder. Nevertheless, during the computation, it is advisable to keep all files in the working directory "mycotoxin-pk-model-main" that is set in the Mycotoxin_Example.rmd file.
 * Mycotoxin-PK.model.R is the Rfile describing the structure of the model. The file specifies all the parameters (including their population mean, variance, mean residual errors), quantities/concentrations, outputs, and interconnections between them. The structure of the model is defined as a system of differential equations that describes the movement of the compound in the different compartments while maintaining the mass balance. This file is converted to C in the "Mycotoxin-PK.model.r.c" file by the gcc compiler.
 * Mycotoxin-default-run.in.R is the Rfile used for the deterministic simulation of the model using default parameters. Outputs are in the "Mycotoxin-default-run.out" file.
@@ -97,6 +97,23 @@ Level { #population
 End.
 ```
 
-## How to run the scripts
+## How to run the TK scripts
 The file Mycotoxin_Example.rmd is to be considered as a command console. The codes contained in this file automatically refer to the files described above.
+
+## iTTC Calculations
+
+The derivation of iTTC values in blood and urine are conducted in the script "TTC value calculation.R" in the iTTC folder
+* Based on the Arnot et al. (2022), three values for the blood iTTC (22nmol/L, 8.5 nmol/L and 8.3 nmol/L) were combined using their geometric mean = 11.578 nmol/L as the central estimate of the "NOAEL" on an internal dose basis (iNOAEL_TTC). The uncertainty in this iNOAEL_TTC was assumed to be lognormally distributed, with a geometric standard deviation (GSD) equal to the GSD of the three data values = 1.5746.
+* The WHO/IPCS (2018) default distribution for uncertainty in the NOAEL was used to convert this to a iBMD_TTC, corresponding to the internal benchmark dose in blood concentration units for a critical effect. 
+* To derive a blood iHDMI_TTC, the "threshold of toxicological concern" for the human internal dose in terms of blood concentration corresponding to a critical effect, the WHO/IPCS (2018) default interspecies TD uncertainty and intraspecies TD uncertainty were applied, using a protection level resulting in I=1% incidence. 
+* To derive a urine iHDMI_TTC, the "threshold of toxicological concern" for the human internal dose in terms of urinary excretion corresponding to a critical effect, the results of population TK modeling were used to first convert the iBMD_TTC into a urinary excretion rate (as a central estimate using geometric mean values). Additionally, the intraspecies uncertainty was derived by combining the results of population TK modeling with the WHO/IPCS (2018) default for intraspecies TD variability to derive a TEA-specific TK-TD intraspecies distribution. This was then combined with the inter-species TD distribution to derive the urine iHDMI_TTC, again using a protection level resulting in I=1% incidence. 
+
+## Risk characterization
+
+The deterministic and probabilistic risk characterization using the iTTC values are conducted in the script "Risk characterization.R" in the iTTC folder, with tabulations and plots created using the scripts "Table statistics.R" and "figures_scatter plots.R"
+* Population biomonitoring data in blood and urine as reported in the manuscript are loaded (3 datasets for blood, 2 for urine).
+* For each biomonitoring data point, a "deterministic" HQ is derived using the iHDMI_TTC calculations above in blood and urine.
+* Separately a probabilistic analysis is conducted by (i) deriving the iHDMI_TTC using random z-scores (for a random individual) i instead of a fixed I=1% to generate population variability in the iHDMI_TTC; (ii) calculating the MOE and probability of exceeding the iHDMI_TTC for each random individual and each biomonitoring data point. The results are saved in the CSV files "HQ iMOE xxx.csv" where xxx is different for each biomonitoring data set.
+* The "Table statistics.R" and "figures_scatter plots.R" files then load these CSV files to tabulate the results and create figures for the manuscript.
+
 
