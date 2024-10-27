@@ -24,6 +24,14 @@ plasma_epic.control$HQ <- plasma_epic.control$CTeA.blood..ng.mL./ttc_blood
 urine_asam$HQ <- urine_asam$X24h.excretion.µg.Kg.bw.d/ttc_urine
 urine_dr$HQ <- urine_dr$X24h.excretion.µg.Kg.bw.d/ttc_urine
 
+## Save HQ values
+
+write.csv(plasma_groningen, file="HQ plasma_groningen.csv", row.names = FALSE)
+write.csv(plasma_toddlers, file="HQ plasma_toddlers.csv", row.names = FALSE)
+write.csv(plasma_epic.control, file="HQ plasma_epic.control.csv", row.names = FALSE)
+write.csv(urine_asam, file="HQ urine_asam.csv", row.names = FALSE)
+write.csv(urine_dr, file="HQ urine_dr.csv", row.names = FALSE)
+
 TTC <- read.csv("iTTC01.csv")
 set.seed(1234)
 
