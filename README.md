@@ -110,10 +110,10 @@ The derivation of iTTC values in blood and urine are conducted in the script "TT
 
 ## Risk characterization
 
-The deterministic and probabilistic risk characterization using the iTTC values are conducted in the script "Risk characterization.R" in the iTTC folder, with tabulations and plots created using the scripts "Table statistics.R" and "figures_scatter plots.R"
+The deterministic and probabilistic risk characterization using the iTTC values are conducted in the script "Risk characterization.R" in the iTTC folder, with tabulations created using the script "Table statistics.R" 
 * Population biomonitoring data in blood and urine as reported in the manuscript are loaded (3 datasets for blood, 2 for urine).
-* For each biomonitoring data point, a "deterministic" HQ is derived using the iHDMI_TTC calculations above in blood and urine.
-* Separately a probabilistic analysis is conducted by (i) deriving the iHDMI_TTC using random z-scores (for a random individual) i instead of a fixed I=1% to generate population variability in the iHDMI_TTC; (ii) calculating the MOE and probability of exceeding the iHDMI_TTC for each random individual and each biomonitoring data point. The results are saved in the CSV files "HQ iMOE xxx.csv" where xxx is different for each biomonitoring data set.
-* The "Table statistics.R" and "figures_scatter plots.R" files then load these CSV files to tabulate the results and create figures for the manuscript.
+* For each biomonitoring data point, a "deterministic" HQ is derived using the iHDMI_TTC calculations above in blood and urine. The results are saved in the CSV files "HQ xxx.csv" where xxx is different for each biomonitoring data set.
+* Separately a probabilistic analysis is conducted by (i) deriving the iHDMI_TTC using random z-scores (for a random individual) i instead of a fixed I=1% to generate population variability in the iHDMI_TTC; (ii) calculating the MOE and probability of exceeding the iHDMI_TTC for a random individual using random exposure values from resampling (with replacement) the biomonitoring data.  The results are saved in the "ProbiIMOETTC.csv" file.
+* The "Table statistics.R" script then load these CSV files to tabulate the results separately for each biomonitoring dataset xxx in files "xxx.stat.csv". Values are then copied into an Excel spreadsheet "statistics table.xlsx".
 
 
