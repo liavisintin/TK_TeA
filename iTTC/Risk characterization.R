@@ -1,3 +1,5 @@
+wd <- getwd()
+setwd("iTTC")
 ttc.df <- read.csv("iTTC01 quantiles.csv")
 #TeA molecular weight: 197.23 g/mol
 #prob iTTC in blood: 0.4977291 nmol/L
@@ -22,55 +24,49 @@ plasma_epic.control$HQ <- plasma_epic.control$CTeA.blood..ng.mL./ttc_blood
 urine_asam$HQ <- urine_asam$X24h.excretion.µg.Kg.bw.d/ttc_urine
 urine_dr$HQ <- urine_dr$X24h.excretion.µg.Kg.bw.d/ttc_urine
 
+## Save HQ values
+
+write.csv(plasma_groningen, file="HQ plasma_groningen.csv", row.names = FALSE)
+write.csv(plasma_toddlers, file="HQ plasma_toddlers.csv", row.names = FALSE)
+write.csv(plasma_epic.control, file="HQ plasma_epic.control.csv", row.names = FALSE)
+write.csv(urine_asam, file="HQ urine_asam.csv", row.names = FALSE)
+write.csv(urine_dr, file="HQ urine_dr.csv", row.names = FALSE)
+
 TTC <- read.csv("iTTC01.csv")
 set.seed(1234)
 
 npop <- 10000
 zrand <- rnorm(npop)
-for (i in 1:npop){
-  z_i <- zrand[i]
-  iTTC_ran <- TTC$bmd/(TTC$AF_interTD*TTC$Intra_GSD.TD^z_i) #unit: nmol/L
-  iTTC_u_ran <- (TTC$bmd*TTC$Cltot.GM*TTC$kufrac.GM*24)/(TTC$AF_interTD*TTC$IntraTKTD_GSD^z_i) #unit: nmol/kg-day
-  
-  for (j in 1:nrow(plasma_groningen)){
-    ind <- plasma_groningen$CTeA.blood..ng.mL.[j]
-    moe <- (iTTC_ran*197.23/1000)/ind
-    prob <- (sum(moe < 1)/length(moe))*100
-    plasma_groningen$prob[j] <- prob
-  }
-  
-  for (k in 1:nrow(plasma_toddlers)){
-    ind_todd <- plasma_toddlers$CTeA.blood..ng.mL.[k]
-    moe_todd <- (iTTC_ran*197.23/1000)/ind_todd
-    prob_todd <- (sum(moe_todd < 1)/length(moe_todd))*100
-    plasma_toddlers$prob[k] <- prob_todd
-  }
-  
-  for (l in 1:nrow(plasma_epic.control)){
-    ind_epcon <- plasma_epic.control$CTeA.blood..ng.mL.[l]
-    moe_epcon <- (iTTC_ran*197.23/1000)/ind_epcon
-    prob_epcon <- (sum(moe_epcon < 1)/length(moe_epcon))*100
-    plasma_epic.control$prob[l] <- prob_epcon
-  }
-  
-  for (m in 1:nrow(urine_asam)){
-    ind_u.asam <- urine_asam$X24h.excretion.µg.Kg.bw.d[m]
-    moe_u.asam <- (iTTC_u_ran*197.23*0.001)/ind_u.asam
-    prob_u.asam <- (sum(moe_u.asam < 1)/length(moe_u.asam))*100
-    urine_asam$prob[m] <- prob_u.asam
-  }
-  
-  for (n in 1:nrow(urine_dr)){
-    ind_u.dr <- urine_dr$X24h.excretion.µg.Kg.bw.d[n]
-    moe_u.dr <- (iTTC_u_ran*197.23*0.001)/ind_u.dr
-    prob_u.dr <- (sum(moe_u.dr < 1)/length(moe_u.dr))*100
-    urine_dr$prob[n] <- prob_u.dr
-  }
-  
+
+n_unc <- nrow(TTC)
+
+moe.prob <- data.frame()
+
+for (i in 1:n_unc) {
+  iTTC_ran <- TTC$bmd[i]/(TTC$AF_interTD[i]*TTC$Intra_GSD.TD[i]^zrand) #unit: nmol/L
+  iTTC_u_ran <- (TTC$bmd[i]*TTC$Cltot.GM[i]*TTC$kufrac.GM[i]*24)/(TTC$AF_interTD[i]*TTC$IntraTKTD_GSD[i]^zrand) #unit: nmol/kg-day
+  # Plasma Groningen
+  moe_gron <- (iTTC_ran*197.23/1000)/sample(plasma_groningen$CTeA.blood..ng.mL.,npop,replace=TRUE)
+  prob_gron <- (sum(moe_gron < 1)/length(moe_gron))*100
+  # Plasma Toddlers
+  moe_todd <- (iTTC_ran*197.23/1000)/sample(plasma_toddlers$CTeA.blood..ng.mL.,npop,replace=TRUE)
+  prob_todd <- (sum(moe_todd < 1)/length(moe_todd))*100
+  # Plasma Epic Controls
+  moe_epcon <- (iTTC_ran*197.23/1000)/sample(plasma_epic.control$CTeA.blood..ng.mL.,npop,replace=TRUE)
+  prob_epcon <- (sum(moe_epcon < 1)/length(moe_epcon))*100
+  # Urine Asam
+  moe_u.asam <- (iTTC_u_ran*197.23*0.001)/sample(urine_asam$X24h.excretion.µg.Kg.bw.d,npop,replace=TRUE)
+  prob_u.asam <- (sum(moe_u.asam < 1)/length(moe_u.asam))*100
+  # Urine De Ruyck
+  moe_u.dr <- (iTTC_u_ran*197.23*0.001)/sample(urine_dr$X24h.excretion.µg.Kg.bw.d,npop,replace=TRUE)
+  prob_u.dr <- (sum(moe_u.dr < 1)/length(moe_u.dr))*100
+  moe.prob <- rbind(moe.prob,
+                    data.frame(prob_gron,
+                               prob_todd,
+                               prob_epcon,
+                               prob_u.asam,
+                               prob_u.dr))
 }
 
-write.csv(plasma_groningen, file="HQ iMOE plasma_groningen.csv", row.names = FALSE)
-write.csv(plasma_toddlers, file="HQ iMOE plasma_toddlers.csv", row.names = FALSE)
-write.csv(plasma_epic.control, file="HQ iMOE plasma_epic.control.csv", row.names = FALSE)
-write.csv(urine_asam, file="HQ iMOE urine_asam.csv", row.names = FALSE)
-write.csv(urine_dr, file="HQ iMOE urine_dr.csv", row.names = FALSE)
+write.csv(moe.prob,file="ProbiIMOETTC.csv",row.names = FALSE)
+setwd(wd)
