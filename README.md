@@ -19,7 +19,7 @@ The original model (on the left) foresaw the introduction of the mycotoxin in th
 
 ![Repository model](https://github.com/user-attachments/assets/8139ff67-4d38-4e4a-b0ce-dcc7e2f1b02e)
 
-Finally, the original model describes the concentrations/quantities of mycotoxin and metabolites in the different compartments independently. However, the analysis of real samples provides quantification for unmodified TeA and total (modified + unmodified) TeA. Therefore, the model was modified to obtain as outputs the same concentrations/quantities measured experimentally.Additional details about the toxicokinetic trial performed and collection of experimental data can be found in the paper associated with this GitHub (**submitted**).
+Finally, the original model describes the concentrations/quantities of mycotoxin and metabolites in the different compartments independently. However, the analysis of real samples provides quantification for unmodified TeA and total (modified + unmodified) TeA. Therefore, the model was modified to obtain as outputs the same concentrations/quantities measured experimentally.Additional details about the toxicokinetic trial performed and collection of experimental data can be found in the paper associated with this GitHub (https://www.nature.com/articles/s41370-025-00746-6).
 
 __Original model__
 ```
